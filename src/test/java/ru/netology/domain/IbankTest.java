@@ -13,7 +13,7 @@ public class IbankTest {
     }
 
     @Test
-    public void activeUserTest(){
+    public void activeUserTest() {
         UserData user = UserGenerator.generateUser("active");
         UserRegistration.registration(user);
         $("[data-test-id='login'] input").val(user.getLogin());
@@ -23,7 +23,7 @@ public class IbankTest {
     }
 
     @Test
-    public void blockedUserTest(){
+    public void blockedUserTest() {
         UserData user = UserGenerator.generateUser("blocked");
         UserRegistration.registration(user);
         $("[data-test-id='login'] input").val(user.getLogin());
@@ -31,6 +31,40 @@ public class IbankTest {
         $("[data-test-id='action-login']").click();
         $("[data-test-id='error-notification']")
                 .shouldHave(Condition.text("Ошибка! Пользователь заблокирован"))
+                .shouldBe(Condition.visible);
+    }
+
+    @Test
+    public void activeUserIncorrectPasswordTest() {
+        UserData user = UserGenerator.generateUser("active");
+        UserRegistration.registration(user);
+        $("[data-test-id='login'] input").val(user.getLogin());
+        $("[data-test-id='password'] input").val("password");
+        $("[data-test-id='action-login']").click();
+        $("[data-test-id='error-notification']")
+                .shouldHave(Condition.text("Ошибка! Неверно указан логин или пароль"))
+                .shouldBe(Condition.visible);
+    }
+
+    @Test
+    public void activeUserIncorrectLoginTest() {
+        UserData user = UserGenerator.generateUser("active");
+        UserRegistration.registration(user);
+        $("[data-test-id='login'] input").val("user");
+        $("[data-test-id='password'] input").val(user.getPassword());
+        $("[data-test-id='action-login']").click();
+        $("[data-test-id='error-notification']")
+                .shouldHave(Condition.text("Ошибка! Неверно указан логин или пароль"))
+                .shouldBe(Condition.visible);
+    }
+
+    @Test
+    public void notRegisteredUserTest() {
+        $("[data-test-id='login'] input").val("user");
+        $("[data-test-id='password'] input").val("password");
+        $("[data-test-id='action-login']").click();
+        $("[data-test-id='error-notification']")
+                .shouldHave(Condition.text("Ошибка! Неверно указан логин или пароль"))
                 .shouldBe(Condition.visible);
     }
 
